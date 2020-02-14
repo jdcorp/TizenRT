@@ -43,3 +43,17 @@ script:
 
 - docker exec -it tizenrt_docker bash -c "cd tools; ./configure.sh ${BUILD_CONFIG}"
 - docker exec -it tizenrt_docker bash -c "make"
+
+addons:
+  sonarcloud:
+    organization: "jdcorp"
+    token:
+      secure: "**************************" # encrypted value of your token
+
+script:
+  # Wraps the compilation with the Build Wrapper to generate configuration (used
+  # later by the SonarScanner) into the "bw-output" folder
+  - build-wrapper-linux-x86-64 --out-dir bw-output <your clean build command>
+  # And finally run the SonarCloud analysis - read the "sonar-project.properties"
+  # file to see the specific configuration
+  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
